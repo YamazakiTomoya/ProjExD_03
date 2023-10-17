@@ -148,7 +148,7 @@ class Explosion:
     def __init__(self, bomb: Bomb):
         self.life = 10
         self.imgs =[]
-        img1 = pg.transform.rotozoom(pg.image.load(f"ex03/fig/explosion.gif"), 0, 2.0)
+        img1 = pg.image.load(f"ex03/fig/explosion.gif")
         img2 = pg.transform.flip(img1, True, True)
         self.imgs.append(img1)
         self.imgs.append(img2)
