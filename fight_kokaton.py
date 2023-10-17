@@ -141,6 +141,26 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Explosion:
+    """
+    爆発エフェクトに関するクラス
+    """
+    def __init__(self, bomb: Bomb):
+        self.life = 10
+        self.imgs =[]
+        img1 = pg.transform.rotozoom(pg.image.load(f"ex03/fig/explosion.gif"), 0, 2.0)
+        img2 = pg.transform.flip(img1, True, True)
+        self.imgs.append(img1)
+        self.imgs.append(img2)
+        self.img = self.imgs[0]
+        self.rct = self.img.get_rect()
+        self.rct.centery = bomb.rct.centery
+        
+    def update(self, screen: pg.Surface):
+        life -= 1
+        screen.blit(self.imgs[life%4], self.rct)
+        
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -148,6 +168,8 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
+    explosion = None
+    explosionlst = []
 
     clock = pg.time.Clock()
     tmr = 0
@@ -176,8 +198,11 @@ def main():
                     beam = None
                     bombs[i] = None
                     bird.change_img(6, screen)
+                    explosion = Explosion()
+                    if Explosion.life > 0:
+                        explosionlst.append(explosion)
                     pg.display.update()
-        bombs = [bomb for bomb in bombs if bomb is not None]                        
+        bombs = [bomb for bomb in bombs if bomb is not None]                
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
@@ -185,6 +210,8 @@ def main():
             bomb.update(screen)
         if beam is not None:
             beam.update(screen)
+        if explosion is not None:
+            explosion.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
